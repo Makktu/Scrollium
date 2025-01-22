@@ -12,9 +12,7 @@ export default function App() {
         <Options title='Back' dismissOptions={() => setShowOptions(false)} />
       )) || (
         <View>
-          <Text style={{ color: 'white', fontSize: 70 }}>
-            For the love of{'\n'}everything...
-          </Text>
+          <Text style={{ color: 'white', fontSize: 70 }}>Scrollium</Text>
           <CustomButton
             title='Options'
             whenPressed={() => setShowOptions(true)}
