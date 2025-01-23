@@ -97,3 +97,7 @@ Scrollium's auto-scrolling mechanism creates a unique reading dynamic that helps
 ## Current Status
 
 Initial development phase - establishing basic project structure and core functionality.
+
+## 22 January 2025 - Initial Setup and commit.
+
+## 23 January 2025 - building out the Prototype.
