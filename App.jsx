@@ -4,43 +4,52 @@ import { StyleSheet, Text, View } from 'react-native';
 import Options from './src/screens/Options';
 import CustomButton from './src/components/CustomButton';
 import MainImage from './src/components/MainImage';
+import ReadingScreen from './src/screens/ReadingScreen';
+import { sampleText } from './books/sampleText';
 
 export default function App() {
   const [showOptions, setShowOptions] = useState(false);
+  const [startReading, setStartReading] = useState(false);
   const [start, setStart] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [currentText, setCurrentText] = useState('Sample Text');
+  const [currentText, setCurrentText] = useState('Lorem ipsum dolor sit amet');
   return (
     <View style={styles.container}>
-      {(showOptions && (
-        <Options title='Back' dismissOptions={() => setShowOptions(false)} />
-      )) || (
-        <View>
-          <View style={styles.imageContainer}>
-            <MainImage />
-          </View>
+      {(startReading && (
+        <ReadingScreen
+          currentText={sampleText}
+          mainMenu={() => setStartReading(false)}
+        />
+      )) ||
+        (showOptions && (
+          <Options title='Back' dismissOptions={() => setShowOptions(false)} />
+        )) || (
+          <View>
+            <View style={styles.imageContainer}>
+              <MainImage />
+            </View>
 
-          <Text style={{ color: 'white', fontSize: 70 }}>Scrollium</Text>
-          <CustomButton
-            title='Options'
-            whenPressed={() => setShowOptions(true)}
-          ></CustomButton>
-          <CustomButton
-            title='START'
-            btnColor='green'
-            whenPressed={() => setStart(true)}
-          ></CustomButton>
-          <CustomButton
-            title='LOAD NEW'
-            whenPressed={() => setLoading(true)}
-          ></CustomButton>
-          <View style={styles.infoBox}>
-            <Text style={styles.text}>Currently Reading:</Text>
-            <Text style={styles.text}>{currentText}</Text>
+            <Text style={{ color: 'white', fontSize: 70 }}>Scrollium</Text>
+            <CustomButton
+              title='Options'
+              whenPressed={() => setShowOptions(true)}
+            ></CustomButton>
+            <CustomButton
+              title='START'
+              btnColor='green'
+              whenPressed={() => setStartReading(true)}
+            ></CustomButton>
+            <CustomButton
+              title='LOAD NEW'
+              whenPressed={() => setLoading(true)}
+            ></CustomButton>
+            <View style={styles.infoBox}>
+              <Text style={styles.text}>Currently Reading:</Text>
+              <Text style={styles.text}>{currentText}</Text>
+            </View>
+            <StatusBar style='light' />
           </View>
-          <StatusBar style='light' />
-        </View>
-      )}
+        )}
     </View>
   );
 }
