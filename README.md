@@ -98,6 +98,8 @@ Scrollium's auto-scrolling mechanism creates a unique reading dynamic that helps
 
 Initial development phase - establishing basic project structure and core functionality.
 
-## 22 January 2025 - Initial Setup and commit.
+## 27 Jan 2025
 
-## 23 January 2025 - building out the Prototype.
+Set up basic scrolling behaviour - still a mess, but got it working without needing a library.
+Using RN's own Animated.
+Need to fix the auto-scrolling logic to make it more fluid and responsive and permit the user to manually control the scrolling when they want to.

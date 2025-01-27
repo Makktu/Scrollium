@@ -12,11 +12,13 @@ export default function App() {
   const [startReading, setStartReading] = useState(false);
   const [start, setStart] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [currentText, setCurrentText] = useState('Lorem ipsum dolor sit amet');
+  // const [currentText, setCurrentText] = useState('Lorem ipsum dolor sit amet');
+  const [scrollSpeed, setScrollSpeed] = useState(3); // auto-scrolling speed in lines per second
   return (
     <View style={styles.container}>
       {(startReading && (
         <ReadingScreen
+          scrollSpeed={scrollSpeed}
           currentText={sampleText}
           mainMenu={() => setStartReading(false)}
         />
