@@ -103,3 +103,12 @@ Initial development phase - establishing basic project structure and core functi
 Set up basic scrolling behaviour - still a mess, but got it working without needing a library.
 Using RN's own Animated.
 Need to fix the auto-scrolling logic to make it more fluid and responsive and permit the user to manually control the scrolling when they want to.
+
+## 28 Jan 2025
+
+Added auto-scrolling functionality, but need to work on the logic a bit more, esp. pausing and resuming the scroll.
+User can manually scroll when they please.
+
+## 29 Jan 2025
+
+Check resume after HUD visit - is currently showing the start of the text before resuming as normal. User would be confused by this as it would appear the app has gone wrong.
