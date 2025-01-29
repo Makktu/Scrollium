@@ -111,4 +111,4 @@ User can manually scroll when they please.
 
 ## 29 Jan 2025
 
-Check resume after HUD visit - is currently showing the start of the text before resuming as normal. User would be confused by this as it would appear the app has gone wrong.
+Worked on the auto-scroll logic, 95% of the way there now. Just need to work on how (or if) to allow for the user to 'fling' the text up/down and intertially scroll. This is an intuitive part of reading long content on phones so it *will* have to be implemented
