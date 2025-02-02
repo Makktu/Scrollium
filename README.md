@@ -112,3 +112,7 @@ User can manually scroll when they please.
 ## 29 Jan 2025
 
 Worked on the auto-scroll logic, 95% of the way there now. Just need to work on how (or if) to allow for the user to 'fling' the text up/down and intertially scroll. This is an intuitive part of reading long content on phones so it *will* have to be implemented
+
+## 2 Feb 2025
+
+Big trouble with epubs and so on - this app works best with plain text, or Markdown, or HTML - one of them. Need to think whether to plough through the epubs and get the text out of them or just do something else. Or abandon the project.
