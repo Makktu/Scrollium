@@ -10,14 +10,11 @@ import {
 } from 'react-native';
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReadingHud from '../components/ReadingHud';
-import EpubReader from '../components/EpubReader';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const STATUS_BAR_HEIGHT =
-  Platform.OS === 'ios' ? 52 : StatusBar.currentHeight || 0;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : StatusBar.currentHeight || 0;
 
 const baseStyles = StyleSheet.create({
   container: {
@@ -40,22 +37,9 @@ const baseStyles = StyleSheet.create({
   bottomSpacer: {
     height: SCREEN_HEIGHT / 2,
   },
-  hudContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
 });
 
-export default function ReadingScreen({
-  scrollSpeed = 1,
-  currentText,
-  mainMenu,
-  filePath,
-  fileType,
-}) {
+export default function ReadingScreen({ scrollSpeed = 1, currentText, mainMenu }) {
   const [showingHud, setShowingHud] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -68,45 +52,6 @@ export default function ReadingScreen({
   const touchStartTime = useRef(0);
   const autoScrollTimer = useRef(null);
 
-  // Load saved settings
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const savedFontSize = await AsyncStorage.getItem('fontSize');
-        const savedSpeed = await AsyncStorage.getItem('scrollSpeed');
-        
-        if (savedFontSize) {
-          setFontSize(parseInt(savedFontSize));
-        }
-        if (savedSpeed) {
-          setSpeed(parseInt(savedSpeed));
-        }
-      } catch (error) {
-        console.warn('Error loading settings:', error);
-      }
-    };
-    loadSettings();
-  }, []);
-
-  // Save settings when they change
-  const handleFontSizeChange = async (newSize) => {
-    setFontSize(newSize);
-    try {
-      await AsyncStorage.setItem('fontSize', newSize.toString());
-    } catch (error) {
-      console.warn('Error saving font size:', error);
-    }
-  };
-
-  const handleSpeedChange = async (newSpeed) => {
-    setSpeed(newSpeed);
-    try {
-      await AsyncStorage.setItem('scrollSpeed', newSpeed.toString());
-    } catch (error) {
-      console.warn('Error saving scroll speed:', error);
-    }
-  };
-
   // Start auto-scrolling
   const startAutoScroll = () => {
     if (autoScrollTimer.current) {
@@ -118,16 +63,11 @@ export default function ReadingScreen({
     const pixelsPerInterval = (pixelsPerSecond * interval) / 1000;
 
     autoScrollTimer.current = setInterval(() => {
-      if (
-        scrollViewRef.current &&
-        !showingHud &&
-        !isPaused &&
-        !isManualScrolling
-      ) {
+      if (scrollViewRef.current && !showingHud && !isPaused && !isManualScrolling) {
         scrollY.current += pixelsPerInterval;
         scrollViewRef.current.scrollTo({
           y: scrollY.current,
-          animated: false,
+          animated: false
         });
       }
     }, interval);
@@ -189,74 +129,58 @@ export default function ReadingScreen({
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
         y: scrollY.current,
-        animated: false,
+        animated: false
       });
     }
   };
 
   const adjustSpeed = (increment) => {
-    const newSpeed = Math.max(1, Math.min(10, speed + increment));
-    handleSpeedChange(newSpeed);
+    setSpeed(prevSpeed => {
+      const newSpeed = Math.max(0, Math.min(8, prevSpeed + increment));
+      return Number(newSpeed.toFixed(2));
+    });
   };
 
   // Create dynamic text style based on fontSize
-  const textStyle = useMemo(
-    () => ({
-      color: '#fff',
-      fontSize: fontSize,
-      lineHeight: fontSize * 1.5,
-      alignSelf: 'stretch',
-      paddingHorizontal: 20,
-    }),
-    [fontSize]
-  );
+  const textStyle = useMemo(() => ({
+    color: '#fff',
+    fontSize: fontSize,
+    lineHeight: fontSize * 1.5,
+    alignSelf: 'stretch',
+    paddingHorizontal: 20,
+  }), [fontSize]);
 
   return (
-    <SafeAreaProvider>
-      <View style={baseStyles.container}>
-        <View style={baseStyles.statusBarPlaceholder} />
-        
-        {fileType === 'epub' ? (
-          <EpubReader
-            filePath={filePath}
+    <View style={baseStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#1c1a1a" />
+      <View style={baseStyles.statusBarPlaceholder} />
+      <ScrollView
+        ref={scrollViewRef}
+        style={baseStyles.scrollView}
+        contentContainerStyle={baseStyles.scrollViewContent}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        showsVerticalScrollIndicator={false}
+        onContentSizeChange={(w, h) => setContentHeight(h)}
+      >
+        <View style={baseStyles.spacer} />
+        <Text style={textStyle}>{currentText}</Text>
+        <View style={baseStyles.bottomSpacer} />
+      </ScrollView>
+      {showingHud && (
+        <View style={StyleSheet.absoluteFill}>
+          <ReadingHud 
+            dismissHud={dismissHud} 
+            mainMenu={mainMenu}
+            currentSpeed={speed}
+            onSpeedChange={(dir) => adjustSpeed(dir * 0.25)}
             fontSize={fontSize}
-            scrollSpeed={speed}
-            onError={(error) => {
-              console.error('EPUB Error:', error);
-              // Handle error appropriately
-            }}
+            onFontSizeChange={setFontSize}
           />
-        ) : (
-          <ScrollView
-            ref={scrollViewRef}
-            style={baseStyles.scrollView}
-            contentContainerStyle={baseStyles.scrollViewContent}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            showsVerticalScrollIndicator={false}
-            onContentSizeChange={(w, h) => setContentHeight(h)}
-          >
-            <View style={baseStyles.spacer} />
-            <Text style={textStyle}>{currentText}</Text>
-            <View style={baseStyles.bottomSpacer} />
-          </ScrollView>
-        )}
-
-        {showingHud && (
-          <View style={baseStyles.hudContainer}>
-            <ReadingHud
-              dismissHud={dismissHud}
-              mainMenu={mainMenu}
-              currentSpeed={speed}
-              onSpeedChange={(dir) => adjustSpeed(dir * 0.5)}
-              fontSize={fontSize}
-              onFontSizeChange={handleFontSizeChange}
-            />
-          </View>
-        )}
-      </View>
-    </SafeAreaProvider>
+        </View>
+      )}
+    </View>
   );
 }

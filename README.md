@@ -112,10 +112,3 @@ User can manually scroll when they please.
 ## 29 Jan 2025
 
 Worked on the auto-scroll logic, 95% of the way there now. Just need to work on how (or if) to allow for the user to 'fling' the text up/down and intertially scroll. This is an intuitive part of reading long content on phones so it *will* have to be implemented
-
-## 31 Jan 2025
-
-Basic functionality complete - with 'clean' text pre-prepared for display... 
-Next step is to add support for ePub files and other formats.
-Made a start but the libraries are new to me and nothing works yet.
-Turns out mobile ereaders are a bit tricky to make.
