@@ -121,4 +121,4 @@ Big trouble with epubs and so on - this app works best with plain text, or Markd
 
 Resuming this more for practice than anything else. Will see how it develops.
 Added ability to paste in content from system clipboard, via the new 'Load New' screen.
-All very messy and provisional for now, but the important thing is to get it working for now.
+All very messy and provisional for now, but the important thing is to get it working.
