@@ -11,10 +11,11 @@ import {
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import ReadingHud from '../components/ReadingHud';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+// import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : StatusBar.currentHeight || 0;
+const STATUS_BAR_HEIGHT =
+  Platform.OS === 'ios' ? 52 : StatusBar.currentHeight || 0;
 
 const baseStyles = StyleSheet.create({
   container: {
@@ -39,7 +40,11 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-export default function ReadingScreen({ scrollSpeed = 1, currentText, mainMenu }) {
+export default function ReadingScreen({
+  scrollSpeed = 1,
+  currentText,
+  mainMenu,
+}) {
   const [showingHud, setShowingHud] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -63,11 +68,16 @@ export default function ReadingScreen({ scrollSpeed = 1, currentText, mainMenu }
     const pixelsPerInterval = (pixelsPerSecond * interval) / 1000;
 
     autoScrollTimer.current = setInterval(() => {
-      if (scrollViewRef.current && !showingHud && !isPaused && !isManualScrolling) {
+      if (
+        scrollViewRef.current &&
+        !showingHud &&
+        !isPaused &&
+        !isManualScrolling
+      ) {
         scrollY.current += pixelsPerInterval;
         scrollViewRef.current.scrollTo({
           y: scrollY.current,
-          animated: false
+          animated: false,
         });
       }
     }, interval);
@@ -129,30 +139,33 @@ export default function ReadingScreen({ scrollSpeed = 1, currentText, mainMenu }
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
         y: scrollY.current,
-        animated: false
+        animated: false,
       });
     }
   };
 
   const adjustSpeed = (increment) => {
-    setSpeed(prevSpeed => {
+    setSpeed((prevSpeed) => {
       const newSpeed = Math.max(0, Math.min(8, prevSpeed + increment));
       return Number(newSpeed.toFixed(2));
     });
   };
 
   // Create dynamic text style based on fontSize
-  const textStyle = useMemo(() => ({
-    color: '#fff',
-    fontSize: fontSize,
-    lineHeight: fontSize * 1.5,
-    alignSelf: 'stretch',
-    paddingHorizontal: 20,
-  }), [fontSize]);
+  const textStyle = useMemo(
+    () => ({
+      color: '#fff',
+      fontSize: fontSize,
+      lineHeight: fontSize * 1.5,
+      alignSelf: 'stretch',
+      paddingHorizontal: 20,
+    }),
+    [fontSize]
+  );
 
   return (
     <View style={baseStyles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1c1a1a" />
+      <StatusBar barStyle='light-content' backgroundColor='#1c1a1a' />
       <View style={baseStyles.statusBarPlaceholder} />
       <ScrollView
         ref={scrollViewRef}
@@ -171,11 +184,11 @@ export default function ReadingScreen({ scrollSpeed = 1, currentText, mainMenu }
       </ScrollView>
       {showingHud && (
         <View style={StyleSheet.absoluteFill}>
-          <ReadingHud 
-            dismissHud={dismissHud} 
+          <ReadingHud
+            dismissHud={dismissHud}
             mainMenu={mainMenu}
             currentSpeed={speed}
-            onSpeedChange={(dir) => adjustSpeed(dir * 0.25)}
+            onSpeedChange={(dir) => adjustSpeed(dir * 0.5)}
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
           />
